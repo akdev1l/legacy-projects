@@ -1,0 +1,21 @@
+---
+- name: create ansible service user
+  user:
+    name: ansible
+    password: "{{ansible_become_password | password_hash('sha256', '885874f96788c6658a094583120085221ca58f7ee6b017ad4ad33c2fbfb028aa') }}"
+    create_home: yes
+    groups: wheel
+    home: "{{ansible_user_home}}"
+
+- name: add ssh key to authorized keys
+  authorized_key:
+    user: ansible
+    key: "{{lookup('file', 'id_rsa.pub')}}"
+    state: present
+
+- name: add sudoers rules
+  copy:
+    src: ansible
+    dest: /etc/sudoers.d/ansible
+    mode: '0644'
+

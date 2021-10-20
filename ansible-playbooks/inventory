@@ -1,0 +1,9 @@
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_port=1022 
+
+[all]
+media.akdev.xyz ansible_connection=local
+donatello.akdev.xyz 
+ns1.akdev.xyz
+

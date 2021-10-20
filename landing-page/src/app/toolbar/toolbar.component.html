@@ -1,0 +1,12 @@
+<mat-toolbar class="mat-elevation-z4" color="primary">
+  <div fxLayout="row">
+    <div fxFlex="calc(10vw)">movincode</div>
+    <div fxLayout="row" fxFlex="calc(70vw)">
+      <span *ngFor="let menuItem of menuItems">
+        <a [routerLink]="menuItem.url">
+          <button mat-button>{{menuItem.title}}</button>
+        </a>
+      </span>
+    </div>
+  </div>
+</mat-toolbar>

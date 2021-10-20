@@ -1,0 +1,2 @@
+## Allows ansible to do work
+%ansible	ALL=(ALL)	ALL

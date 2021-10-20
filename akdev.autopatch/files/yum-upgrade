@@ -1,0 +1,14 @@
+#!/bin/bash
+
+main() {
+
+    export PATH="${PATH}:/usr/local/bin"
+    if yum upgrade -y; then
+        tail -20 /var/log/dnf.log | send-email INFO "Update Successful"
+        reboot
+    else
+        tail -20 /var/log/dnf.log | send-email ALERT "Update Failed"
+    fi
+}
+
+main "$@"

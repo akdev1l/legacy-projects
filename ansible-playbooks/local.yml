@@ -1,0 +1,4 @@
+- name: host bootstraping
+  hosts: localhost
+  roles:
+    - common

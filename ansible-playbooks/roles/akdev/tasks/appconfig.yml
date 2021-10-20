@@ -1,0 +1,21 @@
+---
+- name: copy .vimrc
+  copy:
+    owner: akdev
+    group: akdev
+    src: vimrc
+    dest: /home/akdev/.vimrc
+
+- name: install tmux-themepack
+  become_user: akdev
+  git:
+    repo: https://github.com/jimeh/tmux-themepack.git
+    dest: /home/akdev/.tmux-themepack
+
+- name: copy tmux.conf
+  copy:
+    owner: akdev
+    group: akdev
+    src: tmux.conf
+    dest: /home/akdev/.tmux.conf
+

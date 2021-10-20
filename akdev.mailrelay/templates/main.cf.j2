@@ -1,0 +1,17 @@
+# TLS parameters
+smtpd_use_tls=yes
+smtp_tls_policy_maps = hash:{{postfix_dir}}/tls_policy
+smtp_header_checks = regexp:{{postfix_dir}}/smtp_header_checks
+smtp_sasl_password_maps = hash:{{postfix_dir}}/password
+smtp_generic_maps = hash:{{postfix_dir}}/generic
+
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options =
+
+myhostname = {{inventory_hostname}}
+mydestination = {{inventory_hostname}}, localhost.com, localhost
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+relayhost = {{smtp_url}}

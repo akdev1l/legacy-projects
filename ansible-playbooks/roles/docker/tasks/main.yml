@@ -1,0 +1,20 @@
+---
+- name: install docker
+  dnf:
+    name: docker,python3-docker,python3-dockerpty
+    state: latest
+
+- name: create docker group
+  group:
+    name: docker
+    gid: 2000
+
+- name: add akdev to docker group
+  user:
+    name: akdev
+    groups: docker
+    append: true
+
+- name: create docker network akdev0
+  docker_network:
+    name: akdev0

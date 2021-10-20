@@ -1,0 +1,14 @@
+@	IN	SOA	ns1.akdev.home. akdev.home. (
+			3	; Serial
+
+		604800   ; Refresh
+		86400    ; Retry
+		2419200  ; Expire
+		604800 ) ; Negative Cache TTL
+
+	IN	NS ns1.akdev.home.
+
+ns1.akdev.home.	IN	A	192.168.2.2
+
+donatello.akdev.home.	IN	A	192.168.2.30
+media.akdev.home.	IN	A	192.168.2.30

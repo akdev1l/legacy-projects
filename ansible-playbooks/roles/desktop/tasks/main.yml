@@ -1,0 +1,68 @@
+---
+- name: common
+  include_role:
+    name: common
+
+- name: get fedora release version
+  args:
+    warn: false
+  command: rpm -E %fedora
+  register: fedora_rel
+
+- name: enable RPM Fusion free/non-free
+  dnf:
+    name: "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{fedora_rel.stdout}}.noarch.rpm"
+    state: installed
+
+- name: install KDE desktop package
+  dnf:
+    name: plasma-desktop
+    state: latest
+
+- name: install SDDM display manager
+  dnf:
+    name: sddm
+    state: latest
+
+- name: enable sddm service
+  systemd:
+    name: sddm
+    state: started
+
+- name: install VLC and phonon backend
+  dnf:
+    name: phonon-qt5-backend-vlc
+    state: latest
+
+- name: install fira code
+  dnf:
+    name: https://copr-be.cloud.fedoraproject.org/results/evana/fira-code-fonts/fedora-29-x86_64/00823370-fira-code-fonts/fira-code-fonts-1.206-1.fc29.noarch.rpm
+    state: installed
+
+- name: install desktop packages
+  vars:
+    packages:
+      - xorg-x11-drv-nvidia
+      - akmod-nvidia
+      - steam
+      - firefox
+      - hexchat
+      - kate
+      - dolphin
+      - konsole
+      - flatpak
+      - keepassxc
+  dnf:
+    name: "{{packages}}"
+    state: latest
+
+- name: install spotify-client
+  flatpak:
+    name: https://flathub.org/repo/appstream/com.spotify.Client.flatpakref
+    state: present
+
+- name: install skype
+  flatpak:
+    name: https://flathub.org/repo/appstream/com.skype.Client.flatpakref
+    state: present
+

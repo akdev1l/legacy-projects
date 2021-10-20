@@ -1,0 +1,14 @@
+---
+- name: akdev group
+  group:
+    name: akdev
+    gid: 1000
+
+- name: akdev user
+  user:
+    name: akdev
+    uid: 1000
+    group: akdev
+    groups: wheel
+    state: present
+

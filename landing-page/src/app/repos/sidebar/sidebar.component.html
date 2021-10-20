@@ -1,0 +1,21 @@
+<div class="sidebar">
+  <mat-card>
+    <figure>
+      <img class="avatar" [attr.src]="avatarUrl">
+      <figcaption>Hey, I'm Alex</figcaption>
+    </figure>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Git</mat-card-title>
+    <mat-list>
+      <mat-list-item><a href="https://github.com/e4lejandr0">Github</a></mat-list-item>
+      <mat-list-item><a href="https://bitbucket.org/ealejandro">Bitbucket</a></mat-list-item>
+    </mat-list>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Programming Languages</mat-card-title>
+    <mat-list>
+      <mat-list-item *ngFor="let language of languages">{{language.name}}: {{languageLevels[language.level]}}</mat-list-item>
+    </mat-list>
+  </mat-card>
+</div>

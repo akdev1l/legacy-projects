@@ -1,0 +1,22 @@
+---
+- name: install cronie
+  yum:
+    state: present
+    name: cronie
+
+- name: enable cronie service
+  systemd:
+    name: crond
+    state: started
+    enabled: yes
+
+- name: copy update script
+  copy:
+    src: yum-upgrade
+    dest: /usr/local/bin/yum-upgrade
+    mode: '0755'
+
+- name: drop cronjob to update daily
+  copy:
+    src: upgrade.cron
+    dest: /etc/cron.d/upgrade.cron

@@ -1,0 +1,5 @@
+- name: torrent servers
+  hosts: donatello.akdev.xyz
+  roles:
+    - torrent-server
+  

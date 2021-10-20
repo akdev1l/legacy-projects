@@ -1,0 +1,10 @@
+[Unit]
+Description=Dockerized Plex Media Server
+After=network.target
+After=gateway-server.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=docker start --attach plex

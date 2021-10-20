@@ -1,0 +1,20 @@
+<div fxLayout="row" fxLayout.sm="column">
+  <div fxFlex="20%">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div fxFlex="70%">
+    <h1>Repositories</h1>
+    <mat-card *ngFor="let repo of repositories">
+      <mat-card-title>
+        <fa-icon [icon]="faStar"></fa-icon> {{repo.stargazers_count}}
+        <a [attr.href]="repo.html_url">{{repo.name}}</a>
+      </mat-card-title>
+      <div>
+        Description: {{repo.description}}
+      </div>
+      <div>
+        Language: {{repo.language || "No code"}}
+      </div>
+    </mat-card>
+  </div>
+</div>

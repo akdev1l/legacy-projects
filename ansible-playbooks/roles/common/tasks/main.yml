@@ -1,0 +1,11 @@
+---
+- name: system packages
+  include_tasks: packages.yml
+
+- name: sshd hardening
+  include_tasks: sshd.yml
+
+- name: akdev user setup
+  include_role:
+    name: akdev
+

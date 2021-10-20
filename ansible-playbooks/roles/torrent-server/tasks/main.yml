@@ -1,0 +1,44 @@
+---
+- include_role:
+    name: gateway-server
+
+- name: deploy apache configuration to gateway server
+  copy:
+    src: torrent.akdev.conf
+    dest: /etc/httpd/conf.d
+
+- name: deploy Dockerfile
+  copy:
+    src: torrent-server
+    dest: /tmp
+
+- name: deploy torrent-server.service
+  copy:
+    src: torrent-server.service
+    dest: /etc/systemd/system
+
+- name: build qbittorrent docker image
+  docker_image:
+    name: qbittorrent:latest
+    path: /tmp/torrent-server
+    state: present
+
+- name: create qbittorrent docker container
+  docker_container:
+    name: qbittorrent
+    image: qbittorrent:latest
+    state: present
+    dns_servers:
+      - 1.1.1.1
+      - 1.0.0.1
+    networks:
+      - name: akdev0
+    volumes:
+      - /mnt/media/torrents:/var/lib/jenkins
+
+- name: systemd daemon reload
+  systemd:
+    daemon_reload: true
+
+
+# tasks file for torrent-server

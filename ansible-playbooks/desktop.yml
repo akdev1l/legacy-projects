@@ -1,0 +1,4 @@
+- name: desktop setup
+  hosts: donatello.akdev.home
+  roles:
+    - desktop

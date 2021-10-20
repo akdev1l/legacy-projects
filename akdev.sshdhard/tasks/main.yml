@@ -1,0 +1,26 @@
+---
+- name: copy sshd_config
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+
+- name: install fail2ban package
+  yum:
+    name: fail2ban
+    state: present
+
+- name: deploy fail2ban configuration files
+  template:
+    src: "00-ansible.conf.j2"
+    dest: /etc/fail2ban/jail.d/00-ansible.conf
+
+- name: enable and start fail2ban service
+  systemd:
+    name: fail2ban
+    state: started
+    enabled: yes
+
+- name: restart sshd
+  systemd:
+    name: sshd
+    state: restarted

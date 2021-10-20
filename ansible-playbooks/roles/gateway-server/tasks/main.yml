@@ -1,0 +1,38 @@
+---
+- name: add httpd port to firewall
+  firewalld:
+    service: http
+    state: enabled
+
+- name: copy Dockerfile
+  copy:
+    directory_mode: true
+    src: gateway-server-docker
+    dest: /tmp
+
+- name: build docker image
+  docker_image:
+    force: true
+    name: gateway-server:latest
+    path: /tmp/gateway-server-docker
+    state: present
+
+- name: listen on HTTPS port
+  copy:
+    src: https.conf
+    dest: /etc/httpd/conf.d
+    
+- name: deploying gateway-server.service
+  copy:
+    src: gateway-server.service
+    dest: /etc/systemd/system
+  
+- name: enable service
+  systemd:
+    name: gateway-server
+    state: started
+
+- name: systemd daemon reload
+  systemd:
+    daemon_reload: true
+# tasks file for apache-server

@@ -1,0 +1,5 @@
+- name: plex media server
+  hosts: media.akdev.home
+  gather_facts: no
+  roles:
+    - apache-server

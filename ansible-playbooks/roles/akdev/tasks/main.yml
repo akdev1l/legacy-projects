@@ -1,0 +1,11 @@
+---
+- name: create user
+  include_tasks: akdev.yml
+
+- name: install required packages
+  include_tasks: packages.yml
+
+- name: configure applications
+  include_tasks: appconfig.yml
+
+

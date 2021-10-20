@@ -1,0 +1,21 @@
+[Unit]
+Description=HTTP Gateway
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=docker run --rm \
+                     --attach=stdout \
+                     --attach=stderr \
+                     --name=gateway \
+                     --network=akdev0 \
+                     -p 80:80 \
+                     -p 443:443 \
+                     -v /etc/httpd/conf.d:/etc/httpd/conf.d \
+                     -v /etc/letsencrypt:/etc/letsencrypt \
+                     gateway-server
+ExecStop=docker stop gateway
+                     
+                       

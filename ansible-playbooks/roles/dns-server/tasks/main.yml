@@ -1,0 +1,32 @@
+---
+- name: enable docker
+  include_role:
+    name: docker
+
+- name: deploy Dockerfile
+  copy:
+    src: Dockerfile
+    dest: /tmp/Dockerfile
+
+- name: build image
+  command: docker build /tmp -t dns:latest
+
+- name: deploy /etc/named
+  copy:
+    src: named
+    dest: /etc/named
+
+- name: deploy /etc/named.conf
+  copy:
+    src: named.conf
+    dest: /etc/named.conf
+
+- name: deploy dns-server.service
+  copy:
+    src: dns-server.service
+    dest: /etc/systemd/system/
+
+- name: systemd daemon reload
+  systemd:
+    daemon_reload: true
+# tasks file for dns-server

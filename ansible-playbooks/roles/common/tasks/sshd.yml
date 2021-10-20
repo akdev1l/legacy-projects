@@ -1,0 +1,24 @@
+---
+- name: set standard sshd_config
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+
+- name: tag port for selinux
+  seport:
+    ports: 1022
+    proto: tcp
+    setype: ssh_port_t
+    state: present
+
+- name: restart sshd
+  systemd:
+    name: sshd
+    state: restarted
+
+- name: add sshd to firewall
+  firewalld:
+    immediate: yes
+    port: 1022/tcp
+    state: enabled
+

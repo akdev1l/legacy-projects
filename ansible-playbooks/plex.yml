@@ -1,0 +1,5 @@
+- name: plex media server
+  hosts: media.akdev.xyz
+  gather_facts: true
+  roles:
+    - plex

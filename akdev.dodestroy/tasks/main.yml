@@ -1,0 +1,41 @@
+---
+- name: Remove A record via CloudFlare
+  delegate_to: localhost
+  cloudflare_dns:
+    state: absent
+    zone: "{{inventory_hostname.split('.')[1:] | join('.') }}"
+    type: A
+    record: "{{inventory_hostname.split('.') | first}}"
+    account_email: "{{cf_username}}"
+    account_api_token: "{{cf_api_token}}"
+
+- name: Find Digital Ocean droplet ID
+  delegate_to: localhost
+  tags:
+    - debug
+  uri:
+    url: "{{do_api_url}}/droplets"
+    headers:
+      Authorization: "Bearer {{do_oauth_token}}"
+  register: droplets
+
+- name: Destroy Digital Ocean droplet
+  delegate_to: localhost
+  vars:
+    get_droplet_id: "droplets[?name=='{{inventory_hostname}}'].id"
+    droplet_id: "{{droplets.json | json_query(get_droplet_id) | default([-1], true) | first}}"
+  when: droplet_id | int > 0
+  digital_ocean_droplet:
+    state: absent
+    oauth_token: "{{do_oauth_token}}"
+    region: "{{do_region}}"
+    name: "{{inventory_hostname}}"
+    id: "{{droplet_id}}"
+    wait_timeout: 500
+
+- name: remove from known hosts
+  delegate_to: localhost
+  lineinfile:
+    path: "{{lookup('env', 'HOME')}}/.ssh/known_hosts"
+    regexp: ".*{{inventory_hostname}}.*"
+    state: absent

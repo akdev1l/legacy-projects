@@ -1,0 +1,15 @@
+---
+- name: install packages
+  vars:
+    packages:
+      - zsh
+      - git
+      - tmux
+      - mutt
+      - gcc
+      - gcc-c++
+      - clang
+      - gdb
+  dnf:
+    name: "{{ packages }}"
+    state: latest

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+main() {
+
+    sendmail "${AKDEV_ALERT_EMAIL}"  <<EOF
+From: [SYSTEM] localhost
+To: alex@akdev.xyz
+Subject: [$1] $2
+
+---
+
+$(cat)
+
+---
+
+Sent at $(date +'%D - %H:%m:%S') by $(hostname)
+EOF
+
+}
+
+main "$@"

@@ -1,0 +1,9 @@
+---
+- name: install system packages
+  vars:
+    packages:
+      - policycoreutils-python
+      - python3-firewall
+  dnf:
+    name: "{{packages}}"
+    state: latest

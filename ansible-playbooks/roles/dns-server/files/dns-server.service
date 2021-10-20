@@ -1,0 +1,8 @@
+[Unit]
+Description=DNS Server
+
+[Service]
+ExecStart=/usr/bin/docker run -v /etc/named:/etc/named \
+                                -v /etc/named.conf:/etc/named.conf \
+                                --net=host dns:latest
+

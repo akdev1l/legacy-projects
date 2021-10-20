@@ -1,0 +1,4 @@
+- name: enable docker
+  hosts: donatello.akdev.home
+  roles:
+    - docker

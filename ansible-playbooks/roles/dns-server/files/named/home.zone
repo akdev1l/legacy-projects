@@ -1,0 +1,9 @@
+zone "akdev.home" {
+	type master;
+	file "/etc/named/zones/db.akdev.home";
+};
+
+zone "2.168.192.in-addr.arpa" {
+	type master;
+	file "/etc/named/zones/db.2.168.192";
+};

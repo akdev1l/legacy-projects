@@ -1,0 +1,5 @@
+---
+- name: DNS configuration
+  hosts: donatello.akdev.home
+  roles:
+   - dns-server

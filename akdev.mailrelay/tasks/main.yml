@@ -1,0 +1,59 @@
+---
+- name: install postfix
+  yum:
+    name:
+      - postfix
+      - cyrus-sasl-plain
+    state: present
+
+- name: deploy local user map
+  block:
+    - name: "deploy {{postfix_dir}}/generic"
+      template:
+        src: generic.j2
+        dest: "{{postfix_dir}}/generic"
+    - name: reload local user map
+      shell: "postmap {{postfix_dir}}/generic"
+
+- name: deploy SMTP credentials
+  block:
+    - name: deploy SMTP password file
+      template:
+        src: password.j2
+        dest: "{{postfix_dir}}/password"
+        mode: '0600'
+    - name: reload password file
+      shell: "postmap {{postfix_dir}}/password"
+    - name: deploy tls_policy
+      template:
+        src: tls_policy.j2
+        dest: "{{postfix_dir}}/tls_policy"
+    - name: reload tls_policy file
+      shell: "postmap {{postfix_dir}}/tls_policy"
+
+- name: deploy smtp_header_checks to rewrite "From:"
+  template:
+    src: smtp_header_checks.j2
+    dest: "{{postfix_dir}}/smtp_header_checks"
+
+- name: deploy main.cf
+  template:
+    src: main.cf.j2
+    dest: "{{postfix_dir}}/main.cf"
+
+- name: restart postfix
+  systemd:
+    name: postfix
+    state: restarted
+
+- name: deploy send-email script
+  template:
+    src: send-email.j2
+    dest: /usr/local/bin/send-email
+    mode: '0755'
+
+- name: add AKDEV_ALERT_EMAIL variable to /etc/environment
+  lineinfile:
+    path: /etc/environment
+    line: "AKDEV_ALERT_EMAIL={{akdev_alert_email}}"
+    regexp: "^AKDEV_ALERT_EMAIL"

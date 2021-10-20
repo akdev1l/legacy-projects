@@ -1,0 +1,10 @@
+[Unit]
+Description=Torrent Management Server
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=docker start --attach qbittorrent
+

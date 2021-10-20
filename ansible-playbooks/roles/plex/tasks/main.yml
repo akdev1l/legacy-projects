@@ -1,0 +1,55 @@
+---
+- name: enable docker
+  include_role:
+    name: docker
+
+- name: create /mnt/media
+  file:
+    state: directory
+    path: /mnt/media
+
+- name: install web server
+  include_role: 
+    name: gateway-server
+
+- name: enable plex reverse proxy
+  copy:
+    src: media.akdev.conf
+    dest: /etc/httpd/conf.d
+
+- name: get plex claim
+  pause:
+    prompt: "Please go to https://www.plex.tv/claim and put the claim code here"
+  register: plex_claim
+
+- name: create plex container
+  docker_container:
+    name: plex
+    image: plexinc/pms-docker
+    state: present
+    dns_servers:
+      - 1.1.1.1
+      - 1.0.0.1
+    networks:
+      - name: akdev0
+    published_ports:
+      - 32400:32400
+    volumes:
+      - /var/lib/plexmediaserver:/config
+      - /mnt/media:/data
+    env:
+      TZ: "America/Toronto"  
+      PLEX_CLAIM: "\"{{ plex_claim.user_input }}\""
+      ADVERTISE_IP: "http://media.akdev.xyz,http://plex:32400"
+      HOSTNAME: "media.akdev.xyz"
+
+- name: deploy plex-media-server.service
+  copy:
+    src: plex-media-server.service
+    dest: /etc/systemd/system
+
+- name: systemd daemon reload
+  systemd:
+    daemon_reload: true
+
+# tasks file for plex
