@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Clear out learned serial number to avoid key collision
+gpg-connect-agent "scd serialno" "learn --force" /bye

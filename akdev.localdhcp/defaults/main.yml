@@ -1,0 +1,8 @@
+dhcp_packages:
+  - dhcp-server
+dhcp_routers:
+  - "{{dhcp_pool_start | ipaddr('address/prefix') | ipaddr('1') | ipaddr('address')}}"
+dhcp_enable_ddns: False
+dhcp_subnet_mask: 255.255.255.0
+dhcp_default_lease_time: 3600
+dhcp_max_lease_time: 86400

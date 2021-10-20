@@ -1,0 +1,22 @@
+name: deploy common configuration
+
+on: []
+
+jobs:
+  common:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v1
+      - name: install dependencies
+        run: |
+          sudo apt-get install python3-setuptools python3-wheel
+          pip3 install --user ansible
+      - name: install ansible requirements.yml
+        env:
+          ANSIBLE_SSH_KEY: ${{ secrets.ANSIBLE_SSH_KEY }}
+          ANSIBLE_PUBLIC_VAULT: ${{ secrets.ANSIBLE_PUBLIC_VAULT }}
+        run: ci/init.sh public
+      - name: run common.yml playbook
+        run: ansible-playbook common.yml -e @vault.yml --vault-password-file=password
+          

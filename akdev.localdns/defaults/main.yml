@@ -1,0 +1,3 @@
+named_ttl: 1H
+named_conf: /etc/named.conf
+named_zonedir: /var/named

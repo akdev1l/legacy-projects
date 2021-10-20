@@ -1,0 +1,20 @@
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH="/home/akdev/.oh-my-zsh"
+
+PATH="$PATH:${HOME}/.local/bin"
+ZSH_THEME="gianu"
+CASE_SENSITIVE="true"
+DISABLE_MAGIC_FUNCTIONS="true"
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+export MAKEOPTS=-j15
+export EDITOR=vim
+export VISUAL=vim
+export LESS="-r -S"
+export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"

@@ -1,0 +1,19 @@
+hq:
+  vars:
+    net_main_dns:
+      - 192.168.2.10
+      - 192.168.2.11
+  children:
+    picluster:
+  hosts:
+    desktop.hq.akdev.xyz:
+      net_main_ipv4: 192.168.2.30
+      net_main_connection: enp30s0 
+      ansible_host: "{{net_main_ipv4}}"
+      ansible_user: akdev
+      ansible_python_interpreter: /usr/bin/python3
+    virt0.hq.akdev.xyz:
+      net_main_ipv4: 192.168.2.20
+      net_main_connection: enp8s0
+      ansible_host: "{{net_main_ipv4}}"
+      ansible_user: root

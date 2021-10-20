@@ -1,0 +1,9 @@
+set timeout={{pxe_grub_timeout}}
+
+{% for pxe_distro in pxe_distro_list %}
+menuentry 'Install {{pxe_distro.label}}' --class gnu-linux --class gnu --class os {
+    linuxefi /{{pxe_distro.tftp_dir}}/{{pxe_distro.kernel}} ip=dhcp inst.ks=http://{{pxe_http_host}}/ks/$net_default_mac.cfg inst.stage2=http://{{pxe_http_host}}/os/{{pxe_distro.tftp_dir}}
+    initrdefi /{{pxe_distro.tftp_dir}}/{{pxe_distro.initrd}}
+}
+{% endfor %}
+

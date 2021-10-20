@@ -1,0 +1,35 @@
+---
+- name: install epel-release
+  become: yes
+  when: ansible_distribution == 'CentOS'
+  yum:
+    name: epel-release
+    state: present
+
+- name: install borgbackup
+  become: yes
+  yum:
+    name: borgbackup
+    state: present
+
+- name: create backup user
+  become: yes
+  user:
+    name: "{{borg_user}}"
+    home: "{{borg_backupdir}}"
+    create_home: yes
+    system: yes
+
+- name: create .ssh
+  become: yes
+  file:
+    path: "{{borg_backupdir}}/.ssh"
+    owner: "{{borg_user}}"
+    group: "{{borg_user}}"
+    state: directory
+
+- name: generate ssh key
+  become: yes
+  become_user: "{{borg_user}}"
+  openssh_keypair:
+    path: "{{borg_backupdir}}/.ssh/id_rsa"

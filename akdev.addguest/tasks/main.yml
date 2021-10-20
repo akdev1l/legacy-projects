@@ -1,0 +1,34 @@
+---
+- name: generate mac address
+  set_fact:
+    guest_mac_addr: "{{'52:54:00' | random_mac(seed=inventory_hostname)}}"
+
+- name: create guest storage
+  become: yes
+  delegate_to: "{{guest_hypervisor}}"
+  lvol:
+    lv: "{{guest_name}}"
+    size: "{{guest_disk_size}}"
+    vg: "{{guest_volume_group}}"
+
+- name: define new virsh domain
+  become: yes
+  delegate_to: "{{guest_hypervisor}}"
+  virt:
+    command: define
+    xml: "{{lookup('template', 'domain.xml.j2')}}"
+
+- name: deploy kickstart configuration
+  become: yes
+  delegate_to: "{{guest_pxe_server}}"
+  template:
+    src: new_host.cfg.j2
+    dest: "{{guest_pxe_ksdir}}/{{guest_mac_addr}}.cfg"
+
+- name: start up new domain
+  become: yes
+  delegate_to: "{{guest_hypervisor}}"
+  virt:
+    command: start
+    name: "{{guest_name}}"
+

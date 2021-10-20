@@ -1,0 +1,6 @@
+- name: common configuration
+  hosts: all
+  roles:
+    - name: akdev.sshdhard
+    - name: akdev.autopatch
+    - name: akdev.mailrelay

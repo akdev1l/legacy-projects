@@ -1,0 +1,100 @@
+---
+- name: change hostname to laptop_hostname
+  become: yes
+  hostname:
+    name: "{{laptop_hostname}}" 
+
+- name: configure dnf
+  become: yes
+  template:
+    src: dnf.conf.j2
+    dest: /etc/dnf/dnf.conf
+    
+- name: enable rpmfusion repositories
+  become: yes
+  yum:
+    name: 
+      - https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ansible_distribution_major_version}}.noarch.rpm
+      - https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ansible_distribution_major_version}}.noarch.rpm
+    state: present
+
+- name: install system packages
+  become: yes
+  yum:
+    name: "{{laptop_sys_packages}}"
+    state: present
+
+- name: install desktop packages
+  become: yes
+  yum:
+    name: "{{laptop_desktop_packages}}"
+    state: present
+
+- name: enable desktop services
+  become: yes
+  systemd:
+    name: "{{item}}"
+    state: started
+    enabled: yes
+  loop:
+    - wpa_supplicant
+    - bluetooth
+
+- name: create sway config dir
+  become: yes
+  become_user: "{{laptop_user}}"
+  file:
+    path: "{{laptop_sway_config|dirname}}"
+    state: directory
+
+- name: deploy sway configuration
+  become: yes
+  become_user: "{{laptop_user}}"
+  template:
+    src: sway.j2
+    dest: "{{laptop_sway_config}}"
+
+- name: deploy status-bar script
+  become: yes
+  become_user: "{{laptop_user}}"
+  copy:
+    src: status-bar
+    dest: "{{laptop_home}}/.local/bin"
+    mode: "0755"
+
+- name: add flathub remote
+  become: yes
+  become_user: "{{laptop_user}}"
+  flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: user
+
+- name: install flatpaks
+  become: yes
+  become_user: "{{laptop_user}}"
+  flatpak:
+    name: "{{item}}"
+    state: present
+    method: user
+  loop: "{{laptop_flatpaks}}"
+
+- name: enable powertop auto-tune
+  become: yes
+  systemd:
+    name: powertop
+    enabled: yes
+
+- name: enable firejail sandboxing
+  become: yes
+  become_user: "{{laptop_user}}"
+  file:
+    dest: "{{laptop_home}}/.local/bin/{{item}}"
+    src: /usr/bin/firejail
+    state: link
+  loop: "{{laptop_sandboxed}}"
+
+
+# deploy rclone scripts
+  

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+main() {
+
+
+    while true; do
+        date="$(date "+%Y-%m-%d %r")"
+        battery="$(acpi -b)"
+        printf '%s|%s' "${date}" "${battery}"
+        sleep 1
+    done
+
+}
+
+main "$@"

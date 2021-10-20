@@ -1,0 +1,7 @@
+---
+- name: restart named
+  systemd:
+    name: named
+    state: restarted
+    enabled: yes
+  listen: named_config_changed

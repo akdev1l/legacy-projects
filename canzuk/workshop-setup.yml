@@ -1,0 +1,67 @@
+---
+- name: workshop configuration
+  hosts: localhost
+  handlers:
+    - name: reload systemd configuration
+      listen: systemd-reload
+      become: yes
+      systemd:
+        daemon_reload: yes
+  tasks:
+    - name: create workshop subvolumes
+      become: yes
+      command:
+        cmd: "btrfs subvolume create {{ item|quote }}"
+        creates: "{{ item }}"
+      loop:
+        - /var/lib/workshop/current
+        - /var/lib/workshop/snapshot
+
+    - name: configure ownership
+      become: yes
+      file:
+        state: directory
+        owner: "{{ lookup('env', 'USER') }}"
+        group: "{{ lookup('env', 'USER') }}"
+        mode: '0755'
+        path: "{{ item }}"
+      loop:
+        - /var/lib/workshop/current
+        - /var/lib/workshop/snapshot
+
+    - name: link in home folder
+      file:
+        dest: "{{ lookup('env', 'HOME') }}/workshop"
+        src: /var/lib/workshop/current
+        state: link
+
+    - name: deploy btrfs-snapshot script
+      become: yes
+      copy:
+        src: usr/local/bin/btrfs-snapshot
+        dest: /usr/local/bin
+        mode: '0755'
+        owner: root
+        group: root
+      
+    - name: deploy btrfs-snapshot systemd setup
+      notify: systemd-reload
+      become: yes
+      copy:
+        src: "{{ item }}"
+        dest: /etc/systemd/system
+        mode: '0644'
+        owner: root
+        group: root
+      loop:
+        - systemd/btrfs-snapshot@.service
+        - systemd/btrfs-snapshot@.timer
+
+    - name: enable btrfs-snapshot timer
+      become: yes
+      systemd:
+        name: "btrfs-snapshot@{{ item }}.timer"
+        enabled: yes
+      loop:
+        - -var-lib-workshop-current\x25-var-lib-workshop-snapshot
+

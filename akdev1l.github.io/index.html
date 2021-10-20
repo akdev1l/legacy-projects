@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Mansalva&display=swap" rel="stylesheet"> 
+    <title>Marina Count-Down</title>
+    <script>
+        const getSeconds = (from , to) => {
+            return Math.ceil((to - from)/1000);
+        };
+        const getLabel = () => {
+            return document.querySelector("#main-label");
+        };
+        const getLabelText = () => {
+            const targetTime = Date.parse("27 Feb 2021 09:00:00 EST");
+            const now = new Date();
+            let output = `Alex is counting ${getSeconds(now, targetTime)} seconds to see Marina`;
+            return output;
+        };
+        const refreshLabel = () => {
+            const outputLabel = getLabel();
+            outputLabel.innerText = getLabelText();
+            document.title = outputLabel.innerText;
+        };
+
+        const setup = () => {
+            window.setInterval(refreshLabel, 1000);
+        };
+
+
+        document.addEventListener('DOMContentLoaded', setup);
+    </script>
+    <style>
+        .container {
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            height: 90vh;
+        }
+        #main-label {
+            align-self: center;
+            font-family: 'Mansalva', cursive;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="main-label">Alex is starting to count...</h1>
+    </div>
+</body>
+</html>

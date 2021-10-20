@@ -1,0 +1,37 @@
+picluster:
+  vars:
+    ansible_user: root
+  hosts:
+    pi0.hq.akdev.xyz:
+      net_main_ipv4: 192.168.2.10
+      ansible_host: "{{net_main_ipv4}}"
+    pi1.hq.akdev.xyz:
+      net_main_ipv4: 192.168.2.11
+      dhcp_primary: True
+      ansible_host: "{{net_main_ipv4}}"
+    pi2.hq.akdev.xyz:
+      net_main_ipv4: 192.168.2.12
+      ansible_host: "{{net_main_ipv4}}"
+    pi3.hq.akdev.xyz:
+      net_main_ipv4: 192.168.2.13
+      ansible_host: "{{net_main_ipv4}}"
+    pi4.hq.akdev.xyz:
+      net_main_ipv4: 192.168.2.14
+      ansible_host: "{{net_main_ipv4}}"
+
+pidns:
+  hosts:
+    pi0.hq.akdev.xyz:
+    pi1.hq.akdev.xyz:
+
+pidhcp:
+  children: pidns
+
+piznc:
+  hosts:
+    pi2.hq.akdev.xyz:
+
+pinagios:
+  hosts:
+    pi3.hq.akdev.xyz:
+

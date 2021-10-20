@@ -1,0 +1,15 @@
+---
+- name: configure gaming system
+  hosts: localhost
+  tasks:
+    - name: install gaming flatpaks
+      flatpak:
+        name: "{{ item }}"
+        method: user
+        state: present
+      loop:
+        - com.discordapp.Discord
+        - com.valvesoftware.Steam
+        - com.valvesoftware.Steam.CompatibilityTool.Proton
+        - com.valvesoftware.Steam.CompatibilityTool.Proton-GE
+        - com.valvesoftware.Steam.CompatibilityTool.Proton-Exp

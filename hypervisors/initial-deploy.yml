@@ -1,0 +1,4 @@
+---
+- import_playbook: libvirt-configuration.yml
+- import_playbook: backup-configuration.yml
+- import_playbook: nfs-configuration.yml

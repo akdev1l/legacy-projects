@@ -1,0 +1,17 @@
+---
+- name: prepare virtualization platform
+  hosts: all
+  tasks:
+    - name: install virtualization packages
+      become: yes
+      yum:
+        name:
+          - libvirt
+          - qemu-kvm
+
+    - name: enable libvirt at boot
+      become: yes
+      systemd:
+        service: libvirtd
+        enabled: yes
+        state: started

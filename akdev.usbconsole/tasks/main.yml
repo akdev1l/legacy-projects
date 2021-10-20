@@ -1,0 +1,5 @@
+---
+- name: copy udev rule to open serial USB console
+  copy:
+    src: usb-serial.rules
+    dest: /etc/udev/rules.d/usb-serial.rules

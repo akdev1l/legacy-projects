@@ -1,0 +1,3 @@
+#!/bin/bash
+
+dnf install podman ansible git vim-enhanced rclone python3-ansible-lint

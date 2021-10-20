@@ -1,0 +1,37 @@
+---
+- name: export shared storage and backup
+  hosts: all
+  handlers:
+    - name: reload exports
+      become: yes
+      listen: exportfs-reload
+      command:
+        cmd: "exportfs -ra"
+  tasks:
+    - name: prepare /etc/exports
+      notify: exportfs-reload
+      become: yes
+      vars:
+        exported_dirs:
+          - path: /var/lib/backup
+            networks:
+              - 10.0.1.0/24
+            opts:
+              - rw
+          - path: /var/exports
+            networks:
+              - 10.0.1.0/24
+            opts:
+              - crossmnt
+              - rw
+      template:
+        src: etc/exports.j2
+        dest: /etc/exports
+        mode: '0600'
+
+    - name: enable nfs-server
+      become: yes
+      systemd:
+        name: nfs-server
+        state: started
+        enabled: yes

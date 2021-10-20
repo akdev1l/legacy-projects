@@ -1,0 +1,99 @@
+---
+- name: create personal user
+  become: yes
+  user:
+    name: "{{personal_user}}"
+    home: "{{personal_home}}"
+    update_password: on_create
+    comment: "{{personal_name}}"
+
+- name: configure sudo access
+  become: yes
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/personal
+    mode: '0600'
+
+- name: install personal packages
+  become: yes
+  yum:
+    name: "{{personal_packages}}"
+    state: present
+
+- name: configure shell
+  block:
+    - name: check current oh-my-zsh installation
+      stat:
+        path: "{{personal_home}}/.oh-my-zsh"
+      register: curr_ozsh
+
+    - name: retrieve oh-my-zsh installation script
+      when: not curr_ozsh.stat.exists
+      get_url:
+        url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+        dest: "{{ansible_remote_tmp}}/ozsh-install.sh"
+
+    - name: install oh-my-zsh
+      become: "{{personal_user}}"
+      when: not curr_ozsh.stat.exists
+      shell: "bash {{ansible_remote_tmp}}/ozsh-install.sh --unattended"
+
+    - name: deploy .zshrc
+      become: "{{personal_user}}"
+      template:
+        src: zshrc.j2
+        dest: "{{personal_home}}/.zshrc"
+
+- name: install fira code fonts
+  block:
+    - name: create fonts directory
+      become: "{{personal_user}}"
+      file:
+        path: "{{personal_home}}/.local/share/fonts/firacode"
+        state: directory
+
+    - name: retrieve fira code fonts
+      become: "{{personal_user}}"
+      get_url:
+        url: "https://github.com/tonsky/FiraCode/releases/download/3/FiraCode_3.zip"
+        dest: "{{ansible_remote_tmp}}/firacode.zip"
+
+    - name: install fira code fonts
+      unarchive:
+        src: "{{ansible_remote_tmp}}/firacode.zip"
+        dest: "{{personal_home}}/.local/share/fonts/firacode"
+      register: fira_extract
+
+    - name: refresh font cache
+      shell: "fc-cache"
+      when: fira_extract.changed
+      
+- name: configure tmux
+  block:
+    - name: install tmux-themepack
+      git:
+        repo: https://github.com/jimeh/tmux-themepack.git
+        dest: "{{personal_home}}/.tmux-themepack"
+
+    - name: configure tmux
+      template:
+        src: tmux.conf.j2
+        dest: "{{personal_home}}/.tmux.conf"
+
+    - name: detect current shell
+      getent:
+        database: passwd
+        key: "{{personal_user}}"
+      register: zsh_detect
+    
+    - name: change shell to zsh
+      become: yes
+      shell: "chsh -s /usr/bin/zsh {{personal_user}}"
+      when: getent_passwd[personal_user][5] != "/usr/bin/zsh"
+
+- name: deploy vim configuration
+  template:
+    src: vimrc.j2
+    dest: "{{personal_home}}/.vimrc"
+    owner: "{{personal_user}}"
+    group: "{{personal_user}}"

@@ -1,0 +1,13 @@
+---
+- name: configure nvidia graphic stack
+  hosts: localhost
+  tasks:
+    - name: install nvidia drivers
+      become: yes
+      yum:
+        name:
+          - nvidia-akmod
+          - xorg-x11-nvidia-drv
+          - xorg-x11-nvidia-drv-cuda
+        state: present
+

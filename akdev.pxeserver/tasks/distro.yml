@@ -1,0 +1,48 @@
+---
+- name: create tftp directory
+  become: yes
+  file:
+    state: directory
+    path: "{{item}}"
+  loop:
+    - "{{pxe_images_dir}}"
+    - "{{pxe_tftp_dir}}/{{current_distro.tftp_dir}}"
+    - "{{pxe_http_dir}}/os/{{current_distro.tftp_dir}}"
+
+- name: fetch distribution image
+  become: yes
+  when: pxe_fetch_images
+  get_url:
+    url: "{{current_distro.iso_url}}"
+    dest: "{{pxe_images_dir}}/{{current_distro.iso_name}}"
+  register: distro_iso
+
+- name: create iso mount point
+  become: yes
+  file:
+    state: directory
+    path: "{{pxe_images_dir}}/{{current_distro.tftp_dir}}"
+
+- name: configure iso mount point
+  become: yes
+  mount:
+    fstype: auto
+    opts: "defaults,ro"
+    path: "{{pxe_images_dir}}/{{current_distro.tftp_dir}}"
+    src: "{{pxe_images_dir}}/{{current_distro.iso_name}}"
+    state: mounted
+
+- name: create bind distro mounts
+  become: yes
+  mount:
+    fstype: none
+    opts: "defaults,bind,ro"
+    path: "{{mount_item}}"
+    src: "{{pxe_images_dir}}/{{current_distro.tftp_dir}}"
+    state: mounted
+  loop_control:
+    loop_var: mount_item
+  loop:
+    - "{{pxe_tftp_dir}}/{{current_distro.tftp_dir}}"
+    - "{{pxe_http_dir}}/os/{{current_distro.tftp_dir}}"
+

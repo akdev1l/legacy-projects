@@ -1,0 +1,15 @@
+---
+- name: prepare rclone
+  hosts: localhost
+  tasks:
+    - name: create user systemd directory
+      file:
+        path: "{{ lookup('env', 'HOME') }}/.config/systemd/user"
+        mode: '0700'
+        state: directory
+
+    - name: copy rclone@ systemd service
+      copy:
+        src: rclone@.service
+        mode: '0600'
+        dest: "{{ lookup('env', 'HOME') }}/.config/systemd/user"

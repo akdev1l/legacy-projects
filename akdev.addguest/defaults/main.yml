@@ -1,0 +1,2 @@
+guest_volume_group: guest
+guest_pxe_ksdir: /var/www/html/ks

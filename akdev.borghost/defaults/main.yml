@@ -1,0 +1,3 @@
+---
+borg_basedir: /var/backup
+borg_user: borg

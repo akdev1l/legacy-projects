@@ -1,0 +1,6 @@
+#!/bin/bash
+
+mkdir "${HOME}/gdrive"
+rclone config
+cp rclone@.service "${HOME}/.config/systemd"
+

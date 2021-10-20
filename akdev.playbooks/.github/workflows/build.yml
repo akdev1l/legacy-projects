@@ -1,0 +1,24 @@
+name: build infrastructure
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: centos:latest
+    
+    steps:
+      - uses: actions/checkout@v1
+      - name: install dependencies
+        run: |
+          yum install -y python3-setuptools python3-wheel python3-jmespath python3-pip git
+          pip3 install ansible jmespath
+      - name: install ansible requirements.yml
+        env:
+          ANSIBLE_SSH_KEY: ${{ secrets.ANSIBLE_SSH_KEY }}
+          ANSIBLE_PUBLIC_VAULT: ${{ secrets.ANSIBLE_PUBLIC_VAULT }}
+        run: ci/init.sh public
+      - name: run common.yml playbook
+        run: ansible-playbook do-build.yml -e @vault.yml --vault-password-file=password
+          

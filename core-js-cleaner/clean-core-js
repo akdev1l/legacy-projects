@@ -1,0 +1,17 @@
+#!/bin/bash
+
+UPSTREAM_URL="https://github.com/zloirock/core-js.git"
+CLEAN_URL="git@github.com:akdev1l/core-js.git"
+WORKDIR="$(mktemp -d)"
+PATCH_FILE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/0001-remove-job-seeking-ad.patch"
+
+git clone "${UPSTREAM_URL}" "${WORKDIR}"
+cd "${WORKDIR}"
+
+git -C "${WORKDIR}" apply "${PATCH_FILE}"
+git -C "${WORKDIR}" commit -am 'removing job posting :)'
+git -C "${WORKDIR}" remote set-url origin "${CLEAN_URL}"
+git -C "${WORKDIR}" push -f
+
+echo "${WORKDIR}"
+

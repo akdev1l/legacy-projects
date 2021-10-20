@@ -1,0 +1,33 @@
+---
+- name: configure system to use yubikey
+  hosts: localhost
+  tasks:
+    - name: install yubikey packages
+      become: yes
+      yum:
+        name:
+          - yubikey-manager-qt
+          - yubikey-manager
+          - ykclient
+          - yubioath-desktop
+        state: present
+
+    - name: enable gpg-agent-ssh
+      systemd:
+        scope: user
+        name: gpg-agent-ssh.socket
+        enabled: yes
+
+    - name: copy script to clear-serialno
+      copy:
+        src: usr/local/bin/clear-serialno
+        dest: "{{ lookup('env', 'HOME') }}/.local/bin/clear-serialno"
+        mode: '0755'
+
+    - name: enable udev rule to clear gpg learned serialno
+      become: yes
+      template:
+        src: udev/rules.d/10-yubikey.conf.j2
+        dest: /etc/udev/rules.d/10-yubikey.conf
+        mode: '0600'
+

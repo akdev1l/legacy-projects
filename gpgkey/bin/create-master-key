@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export GNUPGHOME="$PWD/gpghome"
+gpg --batch --gen-key cfg/akdev-master.cfg

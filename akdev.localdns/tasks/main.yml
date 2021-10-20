@@ -1,0 +1,45 @@
+---
+- name: install bind
+  tags:
+    - install
+  yum:
+    name:
+      - bind
+      - bind-utils
+
+- name: create named.conf
+  tags:
+    - config
+  template:
+    src: named.conf.j2
+    dest: "{{named_conf}}"
+  notify: named_config_changed
+
+- name: create zone file
+  tags:
+    - config
+  template:
+    src: zone.j2
+    dest: "{{named_zonedir}}/{{named_domain}}.db"
+  notify: named_config_changed
+
+- name: create empty hosts file
+  tags:
+    - config
+  file:
+    path: "{{named_zonedir}}/{{named_domain}}.hosts.db"
+    state: touch
+
+- name: add dns service to firewall
+  firewalld:
+    service: dns
+    state: enabled
+    permanent: yes
+    immediate: yes
+
+- name: disable ipv6 networking for named
+  lineinfile:
+    path: /etc/sysconfig/named
+    line: OPTIONS="-4"
+    regexp: '^OPTIONS="-4"'
+    state: present

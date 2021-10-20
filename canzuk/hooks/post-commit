@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ansible-lint initial-deploy.yml && \
+    ansible-playbook --ask-become-pass initial-deploy.yml

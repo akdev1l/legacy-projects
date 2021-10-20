@@ -1,0 +1,11 @@
+---
+- name: configure KDE applications
+  hosts: localhost
+  tasks:
+    - name: install kde packages
+      become: yes
+      yum:
+        name:
+          - yakuake
+          - google-noto-emoji-color-fonts
+          - ibus-uniemoji

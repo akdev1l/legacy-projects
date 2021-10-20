@@ -1,0 +1,43 @@
+#!/bin/bash
+
+umask 077
+
+main() {
+    if [ "$1" = "-h" ]; then
+        print_help
+        exit
+    fi
+
+    TMP_GPG=$(mktemp -u)
+    trap cleanup QUIT TERM EXIT
+
+    cp -rp "${GNUPGHOME}" "${TMP_GPG}"
+    export GNUPGHOME="${TMP_GPG}"
+
+    get-key-id | while read keyId; do
+       gpg --command-fd 0 --edit-key "${keyId}" keytocard <<EOF
+y
+${1}
+EOF
+    done
+
+    cleanup
+}
+
+print_help() {
+    cat<<EOF
+usage: $(basename "$0") [1|2|3]
+
+the number corresponds to the gpg keytocard prompt
+EOF
+
+}
+cleanup() {
+    rm -rf "${TMP_GPG}"
+}
+get-key-id() {
+    gpg --keyid-format LONG -k | awk '/sub/{$0=$2; FS="/"; $0=$0;print $2}'
+}
+
+
+main "$@"

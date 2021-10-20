@@ -1,0 +1,6 @@
+pxe_tftp_dir: /var/lib/tftpboot
+pxe_http_dir: /var/www/html
+pxe_images_dir: /var/images
+pxe_arm_enabled: no
+pxe_grub_timeout: 30
+pxe_fetch_images: no

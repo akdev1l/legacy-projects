@@ -1,0 +1,23 @@
+- name: get target hosts
+  hosts: localhost
+  gather_facts: no
+  tags:
+    - interactive
+  vars_prompt:
+    - name: target_host
+      prompt: "Please enter target host"
+      private: no
+  tasks:
+    - add_host:
+        name: "{{target_host}}"
+        groups: deleted_hosts
+      changed_when: False
+      
+- name: destroy DigitalOcean droplets
+  tags:
+    - untagged
+    - interactive
+  hosts: deleted_hosts
+  gather_facts: no
+  roles:
+    - name: akdev.dodestroy

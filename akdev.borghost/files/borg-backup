@@ -1,0 +1,26 @@
+#!/bin/bash
+
+main() {
+
+    source /etc/borgenv
+
+    if [ ! -f /etc/borglist ]; then
+        return 0
+    fi
+    
+    today="$(date +'%Y-%m-%d')"
+    while read src_dir; do
+        repo_name="$(sed 's#/#_#g' <<<"${src_dir}")"
+        repo_name="${repo_name:1}"
+        export BORG_REPO="${BORG_BASEDIR}/${repo_name}"
+        if [ -d "${BORG_REPO}" ]; then
+            borg create '::{now}' "${src_dir}"
+        else
+            mkdir "${BORG_REPO}"
+            borg init --encryption=repokey
+            borg create '::{now}' "${src_dir}"
+        fi
+    done < /etc/borglist
+}
+
+main "$@"

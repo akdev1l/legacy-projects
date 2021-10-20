@@ -1,0 +1,15 @@
+---
+- name: configure storage
+  hosts: localhost
+  tasks:
+    - name: mount workshop local disk
+      become: yes
+      mount:
+        path: /var/lib/workshop
+        src: /dev/disk/by-label/user-workshop
+        opts: compress,discard
+        fstype: btrfs
+        state: mounted
+    - name: mount local nas disk
+      debug: 
+        msg: mount on /var/lib/nas

@@ -1,0 +1,9 @@
+---
+- name: configure git environment
+  hosts: localhost
+  tasks:
+    - name: copy .gitconfig
+      copy:
+        src: gitconfig
+        dest: "{{ lookup('env', 'HOME') }}/.gitconfig"
+        mode: '0600'

@@ -1,0 +1,70 @@
+---
+- name: configure shell environment
+  hosts: localhost
+  tasks:
+    - name: install shell packages
+      become: yes
+      yum:
+        name:
+          - zsh
+          - git
+          - podman
+          - tmux
+          - vim
+          - ripgrep
+          - fira-code-fonts
+        state: present
+
+    - name: don't use nano as default editor
+      become: yes
+      yum:
+        name: nano-default-editor
+        state: absent
+
+    - name: drop in .vimrc
+      copy:
+        src: home/vimrc
+        mode: '0600'
+        dest: "{{ lookup('env', 'HOME') }}/.vimrc"
+
+    - name: create vim configuration directory
+      file:
+        path: "{{ lookup('env', 'HOME') }}/.config/vim/templates"
+        state: directory
+        mode: '0755'
+
+    - name: drop custom vim templates
+      copy:
+        src: home/config/vim/templates
+        dest: "{{ lookup('env', 'HOME') }}/.config/vim/templates"
+        mode: '0755'
+
+    - name: install tmux-themepack
+      git:
+        repo: https://github.com/jimeh/tmux-themepack.git
+        dest: "{{ lookup('env', 'HOME') }}/.config/tmux-themepack"
+        version: 1.1.0
+
+    - name: drop in .tmux.conf
+      copy:
+        src: home/tmux.conf
+        mode: '0600'
+        dest: "{{ lookup('env', 'HOME') }}/.tmux.conf"
+
+    - name: change shell to /usr/bin/zsh
+      become: yes
+      user:
+        name: "{{ lookup('env', 'USER') }}"
+        shell: /usr/bin/zsh
+    
+    - name: install oh-my-zsh
+      script:
+        cmd: oh-my-zsh.sh --unattended
+        creates: "{{ lookup('env', 'HOME') }}/.oh-my-zsh"
+
+    - name: deploy custom zshrc
+      copy:
+        src: home/zshrc
+        dest: "{{ lookup('env', 'HOME') }}/.zshrc"
+        mode: '0600'
+

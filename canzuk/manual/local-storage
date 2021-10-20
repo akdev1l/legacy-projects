@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ ! -e /dev/disk/by-partlabel/user-workshop ]; then
+    parted /dev/nvme0n1 --script \
+        mkpart user-workshop btrfs 201GiB 929GiB
+else
+    echo "skipping partition creation"
+fi
+
+if [ ! -e /dev/disk/by-label/user-workshop ]; then
+    mkfs.btrfs -L user-workshop /dev/disk/by-partlabel/user-workshop
+else
+    echo "skipping filesystem creation"
+fi
+
+partprobe

@@ -1,0 +1,20 @@
+- name: create DigitalOcean droplets
+  hosts: all
+  gather_facts: no
+  roles:
+    - name: akdev.dobuild
+      tags:
+        - build
+    - name: akdev.ansibleuser
+      remote_user: root
+      tags:
+        - createuser
+    - name: akdev.mailrelay
+      tags:
+        - mail
+    - name: akdev.autopatch
+      tags:
+        - patch
+    - name: akdev.sshdhard
+      tags:
+        - ssh

@@ -1,0 +1,48 @@
+#version=DEVEL
+text
+
+# Run the Setup Agent on first boot
+firstboot --enable
+reboot
+# Keyboard layouts
+keyboard --vckeymap=us --xlayouts='us'
+# System language
+lang en_CA.UTF-8
+
+# Network information
+network  --bootproto=dhcp --device=enp8s0 --ipv6=auto --activate
+network  --hostname={{guest_name}}
+
+# Use network installation
+url --url="http://{{guest_pxe_server}}/os/centos/8/BaseOS/"
+# Root password
+rootpw --iscrypted {{guest_root_pass | password_hash('sha256')}}
+# System services
+#services --disabled="chronyd"
+# System timezone
+timezone America/Toronto --isUtc
+# System bootloader configuration
+bootloader --append=" crashkernel=auto" --location=mbr --boot-drive=vda
+# Partition clearing information
+clearpart --none --initlabel
+# Disk partitioning information
+clearpart
+zerombr
+part /boot/efi --fstype="efi"  --ondrive=vda --fsoptions="umask=0077,shortname=winnt" --size 100
+part swap      --fstype="swap" --ondrive=vda --size 1024
+part /         --fstype="ext4" --ondrive=vda --grow
+
+%packages
+@core
+kexec-tools
+%end
+
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end

@@ -1,0 +1,27 @@
+name: deploy common configuration
+
+on: [push]
+
+jobs:
+  common:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v1
+      - name: install dependencies
+        run: |
+          export PATH="${PATH}:${HOME}/.local/bin"
+          sudo apt-get install python3-setuptools python3-wheel ruby-full build-essential zlib1g-dev
+          pip3 install --user ansible
+          gem install --user-install -n ~/.local/bin jekyll bundler
+          ls ~/.local/bin
+      - name: install ansible requirements.yml and jekyll gems
+        env:
+          ANSIBLE_SSH_KEY: ${{ secrets.ANSIBLE_SSH_KEY }}
+          ANSIBLE_PUBLIC_VAULT: ${{ secrets.ANSIBLE_PUBLIC_VAULT }}
+        run: ci/init.sh public
+      - name: build static pages
+        run: ci/build.sh
+      - name: publish pages
+        run: ci/publish.sh
+          

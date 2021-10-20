@@ -1,0 +1,14 @@
+personal_packages:
+  - git
+  - zsh
+  - podman
+  - buildah
+  - skopeo
+  - xclip
+
+personal_name: Alex
+personal_user: akdev
+personal_home: "/home/{{personal_user}}"
+ansible_remote_tmp: "{{personal_home}}/.ansible/tmp"
+
+

@@ -1,0 +1,9 @@
+[Install]
+WantedBy=default.target
+
+[Unit]
+Description=Mount rclone remote %I
+
+[Service]
+ExecStart=/usr/bin/rclone mount %I: ${HOME}/%I
+Restart=always

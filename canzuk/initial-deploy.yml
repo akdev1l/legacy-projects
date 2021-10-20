@@ -1,0 +1,63 @@
+---
+- name: configure desktop from Fedora KDE Live default session
+  hosts: localhost
+  tasks:
+    - name: set hostname
+      become: yes
+      hostname:
+        name: canzuk.hq.akdev.xyz
+
+    - name: install packages
+      become: yes
+      yum:
+        name:
+          - vim-enhanced
+          - git
+          - flatpak
+          - zsh
+          - yakuake
+        state: present
+
+    - name: enable rpm fusion repo
+      become: yes
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+
+    - name: install nvidia drivers
+      become: yes
+      yum:
+        name:
+          - akmod-nvidia
+          - xorg-x11-drv-nvidia
+          - xorg-x11-drv-nvidia-cuda
+        state: present
+
+    - name: enable flathub remote
+      flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: user
+
+    - name: install flatpak applications
+      flatpak:
+        name: "{{ item }}"
+        state: present
+        method: user
+      loop:
+        - com.spotify.Client
+        - com.discordapp.Discord
+        - org.keepassxc.KeePassXC
+
+- import_playbook: workshop-setup.yml
+- import_playbook: yubikey-setup.yml
+- import_playbook: shell-configuration.yml
+- import_playbook: rclone-configuration.yml
+- import_playbook: gaming-configuration.yml
+- import_playbook: libvirt-configuration.yml
+- import_playbook: kde-configuration.yml
+- import_playbook: git-configuration.yml

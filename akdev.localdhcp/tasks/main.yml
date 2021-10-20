@@ -1,0 +1,58 @@
+---
+- name: calculate start and end of dhcp pool
+  set_fact:
+      current_index: "{{play_hosts.index(inventory_hostname)}}"
+      dhcp_end: "{{dhcp_pool_end | ipaddr('address') | regex_replace('\\.', '')}}"
+      dhcp_start: "{{dhcp_pool_start | ipaddr('address') | regex_replace('\\.', '')}}"
+
+- name: calculate dhcp size
+  set_fact:
+      dhcp_size: "{{(dhcp_end|int - dhcp_start|int) / (play_hosts|length)}}"
+
+- name: calculate dhcp step
+  set_fact:
+      dhcp_pool_step: "{{current_index|int * dhcp_size|int}}"
+
+- name: calculate actual dhcp start for current node
+  set_fact:
+      dhcp_curr_start: "{{dhcp_pool_start | ipmath(dhcp_pool_step|int)}}"
+
+- name: calculate actual dhcp end for current node
+  set_fact:
+      dhcp_curr_end: "{{dhcp_curr_start | ipmath([dhcp_size|int,  dhcp_end|int - (dhcp_curr_start | regex_replace('\\.', '') | int)] | min)}}"
+
+- name: print out values
+  when: ansible_check_mode
+  debug:
+    msg: |
+      DHCP size: {{dhcp_size}}
+      DHCP Pool start: {{dhcp_curr_start | ipaddr('address')}}
+      DHCP Pool end: {{dhcp_curr_end }}
+
+- name: install dhcp packages
+  yum:
+    name: "{{dhcp_packages}}"
+    state: present
+
+- name: deploy dhcp configuration file
+  tags:
+    - conf
+  vars:
+    dhcp_pool_start: "{{dhcp_curr_start}}"
+    dhcp_pool_end: "{{dhcp_curr_end}}"
+  template:
+    src: dhcpd.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+  notify: dhcpd_config_changed
+
+- name: add dhcp service to firewall
+  firewalld:
+    service: dhcp
+    state: enabled
+    permanent: yes
+    immediate: yes
+
+- name: enable dhcpd.service
+  systemd:
+    name: dhcpd
+    enabled: yes

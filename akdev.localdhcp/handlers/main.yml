@@ -1,0 +1,7 @@
+---
+- name: restart dhcp service
+  systemd:
+    state: restarted
+    name: dhcpd
+    enabled: yes
+  listen: dhcpd_config_changed

@@ -1,0 +1,63 @@
+---
+- name: configure storage volumes
+  hosts: all
+  tasks:
+    - name: create backup volume group
+      become: yes
+      lvg:
+        pvs: /dev/md0
+        state: present
+        vg: backup-vg
+
+    - name: create backup volume
+      become: yes
+      lvol:
+        vg: backup-vg
+        lv: backup-lv
+        size: +100%FREE
+
+    - name: create backup filesytem
+      become: yes
+      filesystem:
+        dev: /dev/mapper/backup--vg-backup--lv
+        fstype: xfs
+
+    - name: create mountpoint /var/lib/backup
+      become: yes
+      file:
+        path: /var/lib/backup
+        state: directory
+        mode: '0711'
+
+    - name: mount backup fs to /var/lib/backup
+      become: yes
+      mount:
+        path: /var/lib/backup
+        src: /dev/mapper/backup--vg-backup--lv
+        fstype: xfs
+        state: mounted
+        opts: noatime
+        
+    - name: create nvme volume group
+      become: yes
+      lvg:
+        pvs: /dev/mapper/luks-3KOyyM-u3j2-GQkg-MLTh-eVrH-dSSL-B7uEXD
+        state: present
+        vg: nvme
+
+    - name: create guest thin pool
+      become: yes
+      lvol:
+        vg: nvme
+        thinpool: guestfs
+        size: 25%VG
+        shrink: no
+
+    - name: create shared guest storage
+      become: yes
+      lvol:
+        vg: nvme
+        lv: guest-shared
+        size: 65%VG
+        shrink: no
+

@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ENV{ID_USB_DRIVER}=="pl2303", TAG+="systemd", ENV{SYSTEMD_WANTS}="serial-getty@ttyUSB0.service"

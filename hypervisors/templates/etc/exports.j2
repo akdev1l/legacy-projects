@@ -1,0 +1,4 @@
+# This file is maintained by Ansible.
+{% for export in exported_dirs %}
+{{ export.path }}  {{ export.networks | join(",") }}({{ export.opts | join(",") }})
+{% endfor %}

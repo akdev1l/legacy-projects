@@ -1,0 +1,5 @@
+all:
+  vars:
+    ansible_user: ansible
+  hosts:
+    virt0.hq.akdev.xyz:

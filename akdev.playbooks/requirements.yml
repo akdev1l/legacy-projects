@@ -1,0 +1,6 @@
+- src: git+https://github.com/e4lejandr0/akdev.ansibleuser.git
+- src: git+https://github.com/e4lejandr0/akdev.autopatch.git
+- src: git+https://github.com/e4lejandr0/akdev.dobuild.git
+- src: git+https://github.com/e4lejandr0/akdev.dodestroy.git
+- src: git+https://github.com/e4lejandr0/akdev.mailrelay.git
+- src: git+https://github.com/e4lejandr0/akdev.sshdhard.git

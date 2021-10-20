@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -r .git/hooks
+ln -sv "$PWD/hooks" .git/hooks

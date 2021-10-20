@@ -1,0 +1,11 @@
+$TTL {{named_ttl}}
+{{named_domain}}.       IN  SOA   {{named_domain}}. root.{{named_domain}}. (
+    {{lookup('pipe', '/usr/bin/date +"%Y%m%d%H"')}}
+    1d 2h 4w 1h )
+
+{% for host in ansible_play_hosts  %}
+{{named_domain}}.       IN  NS    {{host.split('.')[0]}}
+{{host}}.               IN  A     {{hostvars[host].ansible_all_ipv4_addresses[0]}}
+{% endfor %}
+
+$INCLUDE {{named_domain}}.hosts.db

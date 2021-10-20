@@ -1,0 +1,78 @@
+---
+- name: prepare borg configuration and repos
+  hosts: all
+  vars:
+    user: backup-holder
+    group: backup-holder
+    home: /var/lib/backup
+    pool: "{{ home }}/repos"
+    auth_users:
+      - host: canzuk.hq.akdev.xyz
+        key: "{{ lookup('file', 'akdev.pub') }}"
+  tasks:
+  - name: install backup tools
+    become: yes
+    package:
+      name: borgbackup
+      state: present
+
+  - name: create backup group
+    become: yes
+    group:
+      name: "{{ group }}"
+      state: present
+
+  - name: create backup user
+    become: yes
+    user:
+      name: "{{ user }}"
+      shell: /bin/bash
+      home: "{{ home }}"
+      createhome: yes
+      group: "{{ group }}"
+      state: present
+
+  - name: create ssh directoryfile
+    become: yes
+    file:
+      path: "{{ home }}/.ssh"
+      owner: "{{ user }}"
+      group: "{{ group }}"
+      mode: '0700'
+      state: directory
+
+  - name: create repo subdirectory
+    become: yes
+    file:
+      path: "{{ pool }}"
+      owner: "{{ user }}"
+      group: "{{ group }}"
+      mode: '0700'
+      state: directory
+
+  - name: authorize users
+    become: yes
+    authorized_key:
+      user: "{{ user }}"
+      key: "{{ item.key }}"
+      key_options: 'command="cd {{ pool }}/{{ item.host }};borg serve --restrict-to-path {{ pool }}/{{ item.host }}",restrict'
+    loop: "{{ auth_users }}"
+
+  - name: verify ownership of authorized_keys
+    become: yes
+    file:
+      path: "{{ home }}/.ssh/authorized_keys"
+      owner: "{{ user }}"
+      group: "{{ group }}"
+      mode: '0600'
+      state: file
+
+  - name: create repo subdirectories
+    file:
+      path: "{{ pool }}/{{ item.host }}"
+      owner: "{{ user }}"
+      group: "{{ group }}"
+      mode: '0700'
+      state: directory
+    become: yes
+    loop: "{{ auth_users }}"
