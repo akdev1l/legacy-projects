@@ -1,0 +1,97 @@
+\hypertarget{classtwod_1_1window}{}\section{twod\+:\+:window Class Reference}
+\label{classtwod_1_1window}\index{twod\+::window@{twod\+::window}}
+
+
+{\ttfamily \#include $<$window.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classtwod_1_1window_a3d6203e1119b54e35b4a08db799929da}{callback\+\_\+type} \{ \newline
+{\bfseries Display\+Func}, 
+{\bfseries Overlay\+Func}, 
+{\bfseries Reshape\+Func}, 
+{\bfseries Keyboard\+Func}, 
+\newline
+{\bfseries Mouse\+Func}, 
+{\bfseries Motion\+Func}, 
+{\bfseries Passive\+Motion\+Func}, 
+{\bfseries Visibility\+Func}, 
+\newline
+{\bfseries Entry\+Func}, 
+{\bfseries Special\+Func}, 
+{\bfseries Spaceball\+Motion\+Func}, 
+{\bfseries Spaceball\+Rotate\+Func}, 
+\newline
+{\bfseries Spaceball\+Button\+Func}, 
+{\bfseries Button\+Box\+Func}, 
+{\bfseries Dials\+Func}, 
+{\bfseries Tablet\+Motion\+Func}, 
+\newline
+{\bfseries Tablet\+Button\+Func}, 
+{\bfseries Menu\+Status\+Func}, 
+{\bfseries Idle\+Func}, 
+{\bfseries Timer\+Func}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtwod_1_1window_a77c285c655bae5324a9d2b28c5816562}{window} (const std\+::string \&name, const \hyperlink{structtwod_1_1point__t}{point} \&pos=\{0, 0\})
+\item 
+\mbox{\Hypertarget{classtwod_1_1window_a25d93aae6fa5ede8f2f140b8845e857b}\label{classtwod_1_1window_a25d93aae6fa5ede8f2f140b8845e857b}} 
+void {\bfseries set\+\_\+position} (const \hyperlink{structtwod_1_1point__t}{point} \&pos)
+\item 
+\mbox{\Hypertarget{classtwod_1_1window_a96d10d330d49cca88f8040ea584d70b3}\label{classtwod_1_1window_a96d10d330d49cca88f8040ea584d70b3}} 
+\hyperlink{structtwod_1_1point__t}{point} {\bfseries position} () const
+\item 
+\mbox{\Hypertarget{classtwod_1_1window_a880e2543705aa7dcfd9a5d7239ef1824}\label{classtwod_1_1window_a880e2543705aa7dcfd9a5d7239ef1824}} 
+void {\bfseries set\+\_\+name} (const std\+::string \&name)
+\item 
+\mbox{\Hypertarget{classtwod_1_1window_a8db8ec410916ffb8d9e34c433ee97d58}\label{classtwod_1_1window_a8db8ec410916ffb8d9e34c433ee97d58}} 
+std\+::string\+\_\+view {\bfseries name} () const
+\item 
+\mbox{\Hypertarget{classtwod_1_1window_a5cd1aaecb578e69bdd905d87fe4325da}\label{classtwod_1_1window_a5cd1aaecb578e69bdd905d87fe4325da}} 
+{\footnotesize template$<$typename T $>$ }\\void {\bfseries register\+\_\+cb} (\hyperlink{classtwod_1_1window_a3d6203e1119b54e35b4a08db799929da}{callback\+\_\+type} type, T cb)
+\item 
+\mbox{\Hypertarget{classtwod_1_1window_abfbad4affd63f52ff6f5d3156fa3b27c}\label{classtwod_1_1window_abfbad4affd63f52ff6f5d3156fa3b27c}} 
+void {\bfseries unset\+\_\+cb} (\hyperlink{classtwod_1_1window_a3d6203e1119b54e35b4a08db799929da}{callback\+\_\+type} type)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A class representing a Window.
+
+Wraps around the glut windowing A\+P\+Is to expose an R\+A\+I\+I-\/enabled O\+OP A\+PI 
+
+\subsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{classtwod_1_1window_a3d6203e1119b54e35b4a08db799929da}\label{classtwod_1_1window_a3d6203e1119b54e35b4a08db799929da}} 
+\index{twod\+::window@{twod\+::window}!callback\+\_\+type@{callback\+\_\+type}}
+\index{callback\+\_\+type@{callback\+\_\+type}!twod\+::window@{twod\+::window}}
+\subsubsection{\texorpdfstring{callback\+\_\+type}{callback\_type}}
+{\footnotesize\ttfamily enum \hyperlink{classtwod_1_1window_a3d6203e1119b54e35b4a08db799929da}{twod\+::window\+::callback\+\_\+type}}
+
+Possible types fo callback for a window.
+
+Each value corresponds to a different event for which a callback can be registered. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtwod_1_1window_a77c285c655bae5324a9d2b28c5816562}\label{classtwod_1_1window_a77c285c655bae5324a9d2b28c5816562}} 
+\index{twod\+::window@{twod\+::window}!window@{window}}
+\index{window@{window}!twod\+::window@{twod\+::window}}
+\subsubsection{\texorpdfstring{window()}{window()}}
+{\footnotesize\ttfamily twod\+::window\+::window (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name,  }\item[{const \hyperlink{structtwod_1_1point__t}{point} \&}]{pos = {\ttfamily \{0,~0\}} }\end{DoxyParamCaption})}
+
+Creates a Window 
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the window \\
+\hline
+{\em pos} & Initial position of the window \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/window.\+h\item 
+src/window.\+cpp\end{DoxyCompactItemize}

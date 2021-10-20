@@ -1,0 +1,25 @@
+\hypertarget{namespacetwod_1_1detail}{}\section{twod\+:\+:detail Namespace Reference}
+\label{namespacetwod_1_1detail}\index{twod\+::detail@{twod\+::detail}}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename IntT , typename T $>$ }\\using \hyperlink{namespacetwod_1_1detail_a594c4b9cf396490f0ca5a324b0ef66db}{if\+\_\+integral\+\_\+t} = typename std\+::enable\+\_\+if\+\_\+t$<$ std\+::is\+\_\+integral$<$ IntT $>$\+::value, T $>$
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A helper class where implementation details live.
+
+This class contains the several helper typedefs and methods only used internally. 
+
+\subsection{Typedef Documentation}
+\mbox{\Hypertarget{namespacetwod_1_1detail_a594c4b9cf396490f0ca5a324b0ef66db}\label{namespacetwod_1_1detail_a594c4b9cf396490f0ca5a324b0ef66db}} 
+\index{twod\+::detail@{twod\+::detail}!if\+\_\+integral\+\_\+t@{if\+\_\+integral\+\_\+t}}
+\index{if\+\_\+integral\+\_\+t@{if\+\_\+integral\+\_\+t}!twod\+::detail@{twod\+::detail}}
+\subsubsection{\texorpdfstring{if\+\_\+integral\+\_\+t}{if\_integral\_t}}
+{\footnotesize\ttfamily template$<$typename IntT , typename T $>$ \\
+using \hyperlink{namespacetwod_1_1detail_a594c4b9cf396490f0ca5a324b0ef66db}{twod\+::detail\+::if\+\_\+integral\+\_\+t} = typedef typename std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+integral$<$IntT$>$\+::value, T$>$}
+
+Enable if the type T is integral
+
+S\+F\+I\+N\+A\+E-\/enabler class that checks if the type T is integral or not 
